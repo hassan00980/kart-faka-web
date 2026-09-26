@@ -1,0 +1,1147 @@
+/* ============================================================
+   كرت فكة - الهوية البصرية (طاولة اللعب: felt أخضر + ذهبي + عنابي)
+   مستوحاة من أسلوب «غرفة الألعاب» — Aref Ruqaa + El Messiri
+   ============================================================ */
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+:root {
+  --bg: #0c2119;
+  --bg2: #0f2a20;
+  --felt: #123326;
+  --surface: #153a2b;
+  --surface2: #1b4633;
+  --ivory: #f4eee0;
+  --ivory-dim: #a9c0b2;
+  --gold: #c9a227;
+  --gold-light: #e6c873;
+  --gold-deep: #8f7220;
+  --burgundy: #7c2836;
+  --burgundy-light: #a83e4e;
+  --border-gold: rgba(201, 162, 39, 0.35);
+  --border-soft: rgba(244, 238, 224, 0.12);
+
+  /* مرادفات قديمة تبقى شغالة للاستخدام في أماكن متعددة */
+  --bg1: #0c2119;
+  --bg2: #0f2a20;
+  --bg3: #123326;
+  --card: rgba(244, 238, 224, 0.05);
+  --card-border: rgba(244, 238, 224, 0.12);
+  --text: #f4eee0;
+  --muted: #a9c0b2;
+  --accent: #c9a227;
+  --accent2: #e4cd8c;
+  --violet: #a83e4e;
+  --warn: #d9a441;
+  --green: #63a06b;
+  --red: #a83e4e;
+  --gold: #c9a227;
+  --radius: 20px;
+
+  --font-display: 'Aref Ruqaa', 'El Messiri', 'Cairo', serif;
+  --font-body: 'El Messiri', 'Segoe UI', 'Cairo', Tahoma, sans-serif;
+}
+
+html, body { height: 100%; }
+
+body {
+  font-family: var(--font-body);
+  background:
+    radial-gradient(ellipse 90% 60% at 50% -10%, rgba(201, 162, 39, 0.10), transparent 60%),
+    radial-gradient(ellipse 70% 50% at 100% 110%, rgba(124, 40, 54, 0.18), transparent 60%),
+    repeating-linear-gradient(115deg, rgba(255, 255, 255, 0.013) 0 1px, transparent 1px 3px),
+    linear-gradient(180deg, var(--bg2), var(--bg) 60%);
+  color: var(--ivory);
+  min-height: 100dvh;
+  overflow-x: hidden;
+  background-attachment: fixed;
+}
+/* فينييت: تغميق حواف الشاشة زي طاولة مضيئة */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  box-shadow: inset 0 0 160px rgba(0, 0, 0, 0.55);
+}
+
+/* ===== خلفية حية: توهجات ذهبية وعنابية على الفيلت ===== */
+.bg-deco { position: fixed; inset: 0; overflow: hidden; pointer-events: none; z-index: 0; }
+.orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(70px);
+  opacity: 0.5;
+  animation: drift 14s ease-in-out infinite alternate;
+}
+.orb-1 { width: 340px; height: 340px; background: rgba(201, 162, 39, 0.4); top: -90px; right: -70px; }
+.orb-2 { width: 280px; height: 280px; background: rgba(124, 40, 54, 0.45); bottom: -60px; left: -50px; animation-delay: 4s; }
+.orb-3 { width: 180px; height: 180px; background: rgba(244, 238, 224, 0.18); top: 40%; left: 12%; animation-delay: 8s; opacity: 0.3; }
+@keyframes drift {
+  from { transform: translate(0, 0) scale(1); }
+  to { transform: translate(26px, -30px) scale(1.12); }
+}
+.pitch-line { display: none; }
+
+.screen, .modal { position: relative; z-index: 1; }
+
+.hidden { display: none !important; }
+
+/* ===== الشاشات ===== */
+.screen { display: none; padding: 22px 16px 40px; max-width: 480px; margin: 0 auto; min-height: 100dvh; }
+.screen.active { display: block; animation: fadeUp .35s ease; }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+
+/* ===== البداية (مستوحاة من غرفة الألعاب) ===== */
+.ornament { display: flex; justify-content: center; margin: 8px 0 14px; opacity: .85; }
+.ornament svg { width: 128px; height: 18px; }
+
+.logo { text-align: center; margin: 18px 0 22px; }
+.kicker {
+  font-size: 13px;
+  color: var(--gold-light);
+  letter-spacing: .02em;
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+.logo-img {
+  width: 108px;
+  height: 108px;
+  display: inline-block;
+  filter: drop-shadow(0 10px 26px rgba(201, 162, 39, 0.35));
+  animation: cardSway 3.2s ease-in-out infinite;
+}
+@keyframes cardSway {
+  0%, 100% { transform: translateY(0) rotate(-4deg); }
+  50% { transform: translateY(-10px) rotate(4deg); }
+}
+.logo h1 {
+  font-family: var(--font-display);
+  font-size: 46px; font-weight: 700; letter-spacing: .5px;
+  background: linear-gradient(120deg, var(--ivory) 15%, var(--gold-light) 55%, var(--gold) 90%);
+  -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 3px 14px rgba(201, 162, 39, 0.35));
+}
+.logo .tagline { color: var(--ivory-dim); margin: 10px auto 0; font-size: 15px; line-height: 1.7; max-width: 30ch; }
+
+.app-credit {
+  margin-top: 26px;
+  padding: 10px 0 14px;
+  text-align: center;
+  font-size: 12.5px;
+  color: var(--ivory-dim);
+  border-top: 1px solid var(--border-soft);
+  letter-spacing: 0.3px;
+}
+
+.card {
+  position: relative;
+  background: linear-gradient(165deg, var(--surface2), var(--surface));
+  border: 1px solid var(--border-gold);
+  border-radius: var(--radius);
+  padding: 20px;
+  box-shadow: 0 20px 40px -18px rgba(0, 0, 0, 0.6);
+}
+.card::before {
+  content: "";
+  position: absolute;
+  inset: 6px;
+  border: 1px solid rgba(244, 238, 224, 0.14);
+  border-radius: 15px;
+  pointer-events: none;
+}
+
+/* شريط الرتب */
+.rank-strip {
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+  margin-bottom: 6px;
+}
+.rank-tier {
+  font-size: 10.5px; font-weight: 800;
+  padding: 4px 8px; border-radius: 999px;
+  border: 1px solid var(--border-soft);
+}
+.rank-tier.gold { background: rgba(201, 162, 39, .18); color: var(--gold-light); }
+.rank-tier.red { background: rgba(168, 62, 78, .22); color: #e6a0ab; }
+.rank-tier.violet { background: rgba(31, 70, 51, .35); color: #8fbfa4; }
+.rank-tier.blue { background: rgba(96, 130, 110, .25); color: #b7d4c0; }
+.rank-tier.base { background: rgba(148, 163, 150, .16); color: #c8d5cb; }
+
+.form-card label { display: block; font-weight: 700; margin: 12px 0 6px; font-size: 14px; color: var(--ivory-dim); }
+.form-card label:first-of-type { margin-top: 10px; }
+
+input, select {
+  width: 100%;
+  padding: 14px;
+  font-size: 16px;
+  font-family: var(--font-body);
+  border: 1.5px solid var(--border-soft);
+  border-radius: 13px;
+  outline: none;
+  background: rgba(244, 238, 224, 0.06);
+  color: var(--ivory);
+  transition: border-color .2s, background .2s;
+}
+input::placeholder { color: #6f8a7a; }
+input:focus, select:focus { border-color: var(--gold); background: rgba(244, 238, 224, .09); }
+select option { background: var(--surface); color: var(--ivory); }
+
+.btn {
+  width: 100%;
+  padding: 15px;
+  font-size: 16.5px;
+  font-weight: 800;
+  font-family: var(--font-body);
+  border: none;
+  border-radius: 14px;
+  cursor: pointer;
+  margin-top: 12px;
+  transition: transform .1s, box-shadow .2s, filter .2s;
+  color: var(--ivory);
+}
+.btn:active { transform: scale(.96); }
+.btn-primary { background: linear-gradient(180deg, var(--gold-light), var(--gold)); color: #231a05; box-shadow: 0 12px 24px -10px rgba(201, 162, 39, .55); }
+.btn-secondary { background: linear-gradient(180deg, var(--burgundy-light), var(--burgundy)); box-shadow: 0 12px 24px -10px rgba(124, 40, 54, .55); }
+.btn-warn { background: linear-gradient(180deg, #d9a441, #b8862b); color: #2b1f04; box-shadow: 0 12px 24px -10px rgba(201, 162, 39, .5); }
+.btn-danger { background: linear-gradient(180deg, #b04a5c, #742030); box-shadow: 0 12px 24px -10px rgba(124, 40, 54, .55); }
+.btn-ghost { background: rgba(244, 238, 224, .06); border: 1px solid var(--border-gold); color: var(--ivory-dim); margin-top: 10px; }
+.btn:disabled { opacity: .4; cursor: not-allowed; box-shadow: none; filter: grayscale(.4); }
+
+.btn-row { display: flex; gap: 10px; }
+.btn-row .btn { margin-top: 12px; }
+
+.divider { display: flex; align-items: center; gap: 10px; margin: 18px 0 4px; color: var(--ivory-dim); font-size: 13px; }
+.divider::before, .divider::after { content: ""; flex: 1; height: 1px; background: var(--border-soft); }
+
+.hint { text-align: center; color: var(--ivory-dim); font-size: 13px; margin-top: 18px; line-height: 1.7; }
+.error { text-align: center; color: #ef9aa9; font-size: 13px; font-weight: 700; margin-top: 12px; }
+
+/* ===== اختيار المود (صينية ذهبية) ===== */
+.mode-select {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+  background: rgba(12, 33, 25, 0.5);
+  border: 1px solid var(--border-gold);
+  border-radius: 16px;
+  padding: 6px;
+}
+.mode-btn {
+  flex: 1 1 45%;
+  padding: 12px 4px;
+  border: none;
+  border-radius: 11px;
+  background: transparent;
+  color: var(--ivory-dim);
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all .2s;
+}
+.mode-btn:active { transform: scale(.97); }
+.mode-btn.active {
+  background: linear-gradient(180deg, var(--gold-light), var(--gold));
+  color: #2b1f04;
+  box-shadow: 0 4px 16px rgba(201, 162, 39, .35);
+}
+.mode-hint { text-align: center; color: var(--ivory-dim); font-size: 13px; margin-bottom: 16px; line-height: 1.7; min-height: 42px; }
+
+/* ===== اللوبي ===== */
+.mode-badge {
+  display: inline-block;
+  background: linear-gradient(180deg, var(--gold-light), var(--gold));
+  color: #2b1f04;
+  font-weight: 900;
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 13px;
+  margin: 0 0 10px;
+}
+.lobby-card h2 { margin-bottom: 8px; font-size: 24px; font-weight: 700; }
+.room-code-box { background: rgba(0, 0, 0, .3); border: 1px dashed var(--border-gold); border-radius: 14px; padding: 12px; text-align: center; margin: 6px 0 8px; }
+.room-code-box span { font-size: 12px; color: var(--ivory-dim); }
+.room-code { font-size: 34px; font-weight: 900; letter-spacing: .3em; color: var(--gold-light); margin-top: 2px; }
+.host-ip { margin-top: 10px; background: rgba(201, 162, 39, .08); border: 1px solid var(--border-gold); border-radius: 12px; padding: 10px; text-align: center; }
+.host-ip p { font-size: 12px; color: var(--gold-light); margin-bottom: 4px; }
+.host-ip code { direction: ltr; display: inline-block; font-size: 13px; color: var(--ivory); background: rgba(0, 0, 0, .35); padding: 4px 10px; border-radius: 8px; }
+.host-ip-lan { display: block; direction: ltr; font-size: 11.5px; color: var(--ivory-dim); background: rgba(0, 0, 0, .25); margin-top: 6px; padding: 3px 8px; border-radius: 8px; }
+
+.lobby-options { display: flex; flex-direction: column; gap: 12px; margin: 16px 0; text-align: right; }
+.lobby-options label { font-size: 13px; font-weight: 700; color: var(--ivory-dim); }
+.spy-count-row { display: flex; gap: 8px; }
+.spy-count-btn {
+  flex: 1;
+  padding: 12px;
+  border: 1.5px solid var(--border-soft);
+  border-radius: 12px;
+  background: rgba(244, 238, 224, .04);
+  font-weight: 800;
+  font-family: var(--font-body);
+  font-size: 14px;
+  cursor: pointer;
+  color: var(--ivory-dim);
+  transition: all .15s;
+}
+.spy-count-btn.active { border-color: var(--gold); background: rgba(201, 162, 39, .16); color: var(--gold-light); }
+.spy-count-btn:disabled { opacity: .4; cursor: not-allowed; }
+.da-toggle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+  padding: 10px 12px;
+  border: 1px dashed var(--border-gold);
+  border-radius: 12px;
+  background: rgba(201, 162, 39, 0.06);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--gold-light);
+  cursor: pointer;
+}
+.da-toggle input { width: 18px; height: 18px; accent-color: var(--gold); flex: none; }
+.da-toggle:has(input:disabled) { opacity: .45; cursor: not-allowed; }
+.who-picks { font-size: 13px; color: var(--ivory-dim); background: rgba(244, 238, 224, .05); border-radius: 10px; padding: 10px; }
+
+/* منتَقيات الأزرار (الكاتيجوري والصعوبة) */
+.picker-row { display: flex; flex-wrap: wrap; gap: 8px; }
+.picker-chip {
+  flex: 1 1 auto;
+  min-width: max-content;
+  padding: 11px 14px;
+  border: 1.5px solid var(--border-soft);
+  border-radius: 999px;
+  background: rgba(244, 238, 224, .04);
+  color: var(--ivory-dim);
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all .15s;
+  -webkit-tap-highlight-color: transparent;
+}
+.picker-chip.active { border-color: var(--gold); background: rgba(201, 162, 39, .16); color: var(--gold-light); }
+.picker-chip:disabled { opacity: .4; cursor: not-allowed; }
+.picker-chip:active:not(:disabled) { transform: scale(.96); }
+#difficulty-row { display: flex; flex-direction: column; gap: 8px; }
+
+.players-list { list-style: none; margin-top: 10px; }
+.players-list li {
+  display: flex; justify-content: space-between; align-items: center;
+  background: rgba(244, 238, 224, .05);
+  border: 1px solid var(--border-soft);
+  border-radius: 12px;
+  padding: 11px 14px;
+  margin-bottom: 8px;
+  font-weight: 700;
+}
+.players-list li.offline { opacity: .5; }
+.players-list .tags { display: flex; gap: 6px; align-items: center; }
+.you { background: var(--gold-light); color: #2b1f04; border-radius: 8px; padding: 2px 8px; font-size: 12px; font-weight: 900; }
+.host-tag { color: var(--gold-light); font-size: 12px; font-weight: 800; }
+.lobby-card h3 { margin-top: 14px; font-size: 16px; color: var(--ivory-dim); }
+.wait-msg { text-align: center; color: var(--ivory-dim); font-size: 13px; margin-top: 16px; }
+
+/* لوحة النقاط */
+.score-box { margin-top: 14px; background: rgba(0, 0, 0, .25); border: 1px solid var(--border-gold); border-radius: 14px; padding: 12px; }
+.score-title { font-size: 14px !important; color: var(--gold-light) !important; margin: 0 0 8px !important; text-align: center; }
+.score-list { display: flex; flex-direction: column; gap: 6px; }
+.score-row {
+  display: flex; justify-content: space-between; align-items: center;
+  background: rgba(244, 238, 224, .05);
+  border-radius: 10px;
+  padding: 8px 12px;
+  font-size: 13.5px;
+  font-weight: 700;
+}
+.score-row.me { background: rgba(201, 162, 39, .14); border: 1px solid var(--border-gold); }
+.score-row b { color: var(--gold-light); font-size: 16px; }
+
+/* ===== شاشة اللعب: العام ===== */
+.game-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+}
+.header-info { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.badge {
+  background: rgba(244, 238, 224, .07);
+  border: 1px solid var(--border-gold);
+  padding: 5px 11px;
+  border-radius: 999px;
+  font-size: 12.5px;
+  font-weight: 800;
+  color: var(--ivory-dim);
+}
+.badge b { color: var(--gold-light); letter-spacing: .12em; }
+.points-badge { background: rgba(201, 162, 39, .12); border-color: var(--border-gold); color: var(--gold-light); }
+.btn-ghost-sm {
+  background: rgba(244, 238, 224, .07);
+  border: 1px solid var(--border-gold);
+  color: var(--ivory-dim);
+  border-radius: 10px;
+  padding: 6px 10px;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.secret-card {
+  background:
+    radial-gradient(120% 140% at 15% 0%, rgba(201, 162, 39, .12), transparent 55%),
+    linear-gradient(165deg, var(--surface2), var(--surface));
+  border: 1px solid var(--border-gold);
+  border-radius: var(--radius);
+  padding: 20px;
+  text-align: center;
+  box-shadow: 0 0 34px rgba(201, 162, 39, .12);
+  margin-bottom: 12px;
+}
+.secret-label { font-size: 12px; font-weight: 800; color: var(--gold-light); letter-spacing: .5px; }
+.char-emoji { font-size: 62px; margin: 8px 0 4px; filter: drop-shadow(0 6px 16px rgba(0, 0, 0, .4)); }
+.char-name { font-size: 30px; font-weight: 900; font-family: var(--font-display); }
+.secret-note { color: var(--ivory-dim); font-size: 13px; margin-top: 8px; line-height: 1.7; }
+
+/* صورة الشخصية + معلوماتها */
+.char-img {
+  width: 110px; height: 110px; object-fit: cover;
+  border-radius: 18px; margin: 8px auto 4px;
+  border: 2px solid var(--border-gold);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, .45);
+  display: block;
+  background: #0b1a13;
+}
+.char-info { margin-top: 12px; text-align: right; }
+.facts-grid {
+  display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px;
+  background: rgba(244, 238, 224, .04);
+  border: 1px solid var(--border-soft);
+  border-radius: 12px; padding: 8px;
+}
+.fact-cell { background: rgba(244, 238, 224, .05); border-radius: 8px; padding: 5px 8px; text-align: center; }
+.fact-cell .fact-k { display: block; font-size: 10.5px; color: var(--ivory-dim); margin-bottom: 2px; }
+.fact-cell b { font-size: 12.5px; color: var(--ivory); }
+.fact-block {
+  margin-top: 8px;
+  background: rgba(244, 238, 224, .04);
+  border: 1px solid var(--border-soft);
+  border-radius: 12px; padding: 8px 12px;
+}
+.fact-block h5 { font-size: 13px; color: var(--gold-light); margin-bottom: 5px; display: flex; align-items: center; gap: 6px; }
+.fact-ct {
+  font-size: 10px; background: rgba(201, 162, 39, .35); color: var(--ivory);
+  border-radius: 20px; padding: 1px 7px; font-weight: 800;
+}
+.fact-block ul { margin: 0; padding-right: 18px; }
+.fact-block li { font-size: 12.5px; line-height: 1.8; color: var(--ivory); }
+.fact-year { color: var(--ivory-dim); font-size: 11px; }
+.bio-only p { font-size: 13px; line-height: 1.8; color: var(--ivory); margin: 0; }
+
+.turn-bar {
+  background: rgba(244, 238, 224, .07);
+  border: 1px solid var(--border-soft);
+  border-radius: 14px;
+  padding: 13px;
+  text-align: center;
+  font-weight: 800;
+  font-size: 14.5px;
+  margin-bottom: 10px;
+}
+.turn-bar.mine {
+  background: linear-gradient(135deg, rgba(201, 162, 39, .25), rgba(201, 162, 39, .08));
+  border-color: var(--border-gold);
+  color: var(--gold-light);
+  box-shadow: 0 0 24px rgba(201, 162, 39, .18);
+  animation: pulseGlow 1.6s ease-in-out infinite;
+}
+@keyframes pulseGlow {
+  0%, 100% { box-shadow: 0 0 14px rgba(201, 162, 39, .16); }
+  50% { box-shadow: 0 0 30px rgba(201, 162, 39, .4); }
+}
+
+.spectator {
+  background: rgba(201, 162, 39, .1);
+  border: 1px solid var(--border-gold);
+  border-radius: 12px;
+  padding: 10px;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--gold-light);
+  margin-bottom: 10px;
+}
+
+.action-row { display: flex; gap: 10px; margin-bottom: 10px; }
+.action-row .btn { margin-top: 0; }
+
+/* زر التصويت */
+.vote-request-wrap { margin: 10px 0; }
+.vote-prompt {
+  background: linear-gradient(135deg, rgba(201, 162, 39, .16), rgba(168, 62, 78, .14));
+  border: 1px solid var(--border-gold);
+  border-radius: 16px;
+  padding: 14px;
+  margin-bottom: 10px;
+  box-shadow: 0 0 24px rgba(201, 162, 39, .12);
+}
+.vp-title { font-weight: 900; text-align: center; font-size: 15px; }
+.vp-count { text-align: center; color: var(--gold-light); font-size: 12.5px; margin: 6px 0 2px; font-weight: 700; }
+.vp-btns { display: flex; gap: 8px; }
+.vp-btns .btn { margin-top: 8px; margin-bottom: 0; }
+
+/* ===== المزاد ===== */
+.auction-wrap { margin-bottom: 10px; }
+.auct-status {
+  text-align: center;
+  background: rgba(244, 238, 224, .06);
+  border: 1px solid var(--border-soft);
+  border-radius: 13px;
+  padding: 11px;
+  font-weight: 800;
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+.auct-status.mine {
+  background: linear-gradient(135deg, rgba(201, 162, 39, .22), rgba(201, 162, 39, .07));
+  border-color: var(--border-gold);
+  color: var(--gold-light);
+  animation: pulseGlow 1.6s ease-in-out infinite;
+}
+
+/* بطاقة اللاعب */
+.auct-card-zone { display: flex; justify-content: center; margin-bottom: 10px; }
+.fifa-card {
+  width: 100%;
+  max-width: 420px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  border-radius: 20px;
+  padding: 18px;
+  position: relative;
+  overflow: hidden;
+  border: 1.5px solid rgba(244, 238, 224, .2);
+  box-shadow: 0 14px 30px rgba(0, 0, 0, .4);
+}
+.fifa-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(135deg, transparent 0 14px, rgba(255, 255, 255, .035) 14px 28px);
+  pointer-events: none;
+}
+.fc-rating {
+  min-width: 74px; height: 74px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 38px; font-weight: 900;
+  border: 4px solid var(--ring, #e6c873);
+  color: var(--ivory);
+  text-shadow: 0 2px 6px rgba(0, 0, 0, .5);
+  box-shadow: 0 0 26px var(--glow, transparent);
+  background: radial-gradient(circle at 30% 25%, rgba(244, 238, 224, .22), transparent 55%), rgba(0, 0, 0, .35);
+  flex-shrink: 0;
+}
+.fc-body { flex: 1; min-width: 0; }
+.fc-pos {
+  display: inline-block;
+  background: rgba(0, 0, 0, .4);
+  border: 1px solid rgba(244, 238, 224, .3);
+  color: var(--ivory);
+  font-size: 11px; font-weight: 900;
+  padding: 3px 9px;
+  border-radius: 999px;
+  margin-bottom: 5px;
+}
+.fc-name { font-size: 21px; font-weight: 900; line-height: 1.25; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.fc-meta { font-size: 12.5px; color: rgba(244, 238, 224, .85); margin-top: 3px; }
+.fc-meta .dot { margin: 0 5px; opacity: .6; }
+.fc-tag { font-size: 11.5px; font-weight: 800; color: var(--ring, #e6c873); margin-top: 4px; }
+.fc-value {
+  background: rgba(0, 0, 0, .4);
+  border: 1px solid rgba(244, 238, 224, .22);
+  color: var(--gold-light);
+  font-size: 12px; font-weight: 900;
+  padding: 7px 10px;
+  border-radius: 12px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* رتب البطاقات (على الطاولة الذهبية) */
+.fifa-card.r-legend { background: linear-gradient(170deg, #4a3608, #1c1400); --ring: var(--gold-light); --glow: rgba(201, 162, 39, .6); }
+.fifa-card.r-elite { background: linear-gradient(170deg, #4a1420, #1c0a10); --ring: #e6a0ab; --glow: rgba(168, 62, 78, .6); }
+.fifa-card.r-violet { background: linear-gradient(170deg, #14513a, #0b2419); --ring: #7fb89c; --glow: rgba(99, 160, 107, .55); }
+.fifa-card.r-good { background: linear-gradient(170deg, #3a4014, #1a1f08); --ring: #c9b45a; --glow: rgba(201, 178, 90, .5); }
+.fifa-card.r-base { background: linear-gradient(170deg, #2a3430, #14191a); --ring: #9fb0a6; --glow: rgba(159, 176, 166, .4); }
+
+.auct-progress { text-align: center; font-size: 12.5px; color: var(--ivory-dim); font-weight: 700; margin-bottom: 8px; }
+
+.auct-bid-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin-bottom: 10px; }
+.auct-bid-row .btn {
+  margin-top: 0;
+  padding: 12px 4px;
+  font-size: 13px;
+  border-radius: 10px;
+}
+.auct-bid-row #auct-buy { grid-column: span 2; font-size: 13.5px; }
+
+.auct-budget-box { background: rgba(0, 0, 0, .28); border: 1px solid var(--border-gold); border-radius: 14px; padding: 12px; margin-bottom: 10px; }
+.auct-budget-label { display: flex; justify-content: space-between; font-size: 13px; font-weight: 800; margin-bottom: 7px; }
+.auct-budget-label span:last-child { color: var(--gold-light); font-size: 15px; }
+.budget-bar { height: 12px; border-radius: 999px; background: rgba(244, 238, 224, .1); overflow: hidden; }
+.budget-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--gold-deep), var(--gold-light));
+  transition: width .4s ease;
+}
+
+/* الخطف */
+.auct-steal { background: linear-gradient(135deg, rgba(168, 62, 78, .14), rgba(201, 162, 39, .1)); border: 1px solid rgba(168, 62, 78, .4); border-radius: 16px; padding: 14px; margin-bottom: 10px; }
+.auct-steal-title { font-weight: 900; text-align: center; font-size: 15px; margin-bottom: 8px; }
+.auct-steal-targets { display: flex; flex-direction: column; gap: 12px; }
+.steal-player { background: rgba(0, 0, 0, .25); border-radius: 12px; padding: 10px; }
+.steal-player-name { font-size: 12.5px; font-weight: 800; color: var(--gold-light); margin-bottom: 6px; }
+.steal-target-card { border-radius: 10px; cursor: default; }
+.steal-target-card.picked { outline: 3px solid var(--gold); outline-offset: 1px; filter: brightness(1.25); }
+
+/* تشكيلة + منافسين */
+.my-team-box, .teams-box { background: rgba(0, 0, 0, .25); border: 1px solid var(--border-gold); border-radius: 14px; padding: 12px; margin-bottom: 10px; }
+.my-team-head, .teams-head { display: flex; justify-content: space-between; font-size: 13px; font-weight: 800; margin-bottom: 8px; color: var(--ivory-dim); }
+.my-total, .rival-total { color: var(--gold-light); font-size: 15px; }
+.teams-list { display: flex; flex-direction: column; gap: 12px; }
+.rival-team { background: rgba(244, 238, 224, .04); border-radius: 12px; padding: 10px; }
+.rival-head { display: flex; justify-content: space-between; font-size: 13px; font-weight: 800; margin-bottom: 6px; }
+
+.mini-row { display: flex; flex-wrap: wrap; gap: 6px; }
+.mini-card {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  max-width: 100%;
+  background: linear-gradient(150deg, var(--mbg, #1b4633), var(--mbg2, #0f2a20));
+  border: 1px solid var(--mring, #3a5a48);
+  border-radius: 9px;
+  padding: 5px 8px;
+  font-size: 11px;
+  font-weight: 800;
+  position: relative;
+  overflow: hidden;
+}
+.mini-pos { font-size: 9px; font-weight: 900; color: var(--mring, #9fb0a6); }
+.mini-name { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 110px; }
+.mini-r { color: var(--ivory); font-size: 13px; }
+.mini-card.r-legend { --mbg: #4a3608; --mbg2: #1c1400; --mring: var(--gold-light); }
+.mini-card.r-elite { --mbg: #4a1420; --mbg2: #1c0a10; --mring: #e6a0ab; }
+.mini-card.r-violet { --mbg: #14513a; --mbg2: #0b2419; --mring: #7fb89c; }
+.mini-card.r-good { --mbg: #3a4014; --mbg2: #1a1f08; --mring: #c9b45a; }
+.mini-card.r-base { --mbg: #2a3430; --mbg2: #14191a; --mring: #9fb0a6; }
+.empty-note { font-size: 12px; color: #6f8a7a; padding: 4px 0; }
+
+/* ===== الشاات ===== */
+.chat-wrap { margin-top: 12px; }
+.chat-list {
+  background: rgba(0, 0, 0, .3);
+  border: 1px solid var(--border-soft);
+  border-radius: 14px;
+  padding: 12px;
+  max-height: 190px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+.chat-msg { font-size: 13.5px; line-height: 1.6; max-width: 88%; }
+.chat-msg.system {
+  align-self: center;
+  background: rgba(201, 162, 39, .14);
+  border: 1px solid var(--border-gold);
+  color: var(--gold-light);
+  border-radius: 999px;
+  padding: 6px 14px;
+  font-size: 12px;
+}
+.chat-msg.me { align-self: flex-end; background: linear-gradient(135deg, rgba(201, 162, 39, .18), rgba(201, 162, 39, .07)); border: 1px solid var(--border-gold); border-radius: 14px 14px 4px 14px; padding: 8px 12px; }
+.chat-msg.other { align-self: flex-start; background: rgba(244, 238, 224, .07); border: 1px solid var(--border-soft); border-radius: 14px 14px 14px 4px; padding: 8px 12px; }
+.chat-msg .sender { display: block; font-size: 11px; color: var(--gold-light); font-weight: 800; margin-bottom: 2px; }
+.chat-quick { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0; }
+.chip {
+  background: rgba(244, 238, 224, .06);
+  border: 1px solid var(--border-soft);
+  color: var(--ivory-dim);
+  font-size: 12px;
+  border-radius: 999px;
+  padding: 6px 11px;
+  cursor: pointer;
+}
+.chip:active { background: rgba(244, 238, 224, .16); transform: scale(.96); }
+.chat-input-row { display: flex; gap: 8px; margin-top: 4px; }
+.chat-input-row input { flex: 1; }
+.chat-input-row .btn { width: auto; padding: 13px 18px; margin-top: 0; white-space: nowrap; }
+
+/* ===== المودالات ===== */
+.modal {
+  position: fixed; inset: 0; z-index: 50;
+  background: rgba(6, 14, 10, 0.75);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex; align-items: center; justify-content: center;
+  padding: 20px;
+  animation: fadeIn .25s ease;
+}
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+.modal-box {
+  width: 100%; max-width: 430px;
+  max-height: 88dvh; overflow-y: auto;
+  background: linear-gradient(170deg, var(--surface2), var(--surface));
+  border: 1px solid var(--border-gold);
+  border-radius: 22px;
+  padding: 22px;
+  box-shadow: 0 26px 60px rgba(0, 0, 0, .55);
+}
+.modal-box h3 { font-size: 22px; margin-bottom: 10px; text-align: center; font-family: var(--font-display); }
+.modal-box label { display: block; font-size: 13px; font-weight: 800; color: var(--ivory-dim); margin: 10px 0 5px; }
+.modal-hint { text-align: center; font-size: 12.5px; color: #ef9aa9; font-weight: 700; margin-top: 10px; }
+.modal-btns { margin-top: 12px; }
+
+/* التصويت */
+.vote-targets { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; }
+.vote-target-btn {
+  width: 100%;
+  background: rgba(244, 238, 224, .05);
+  border: 1.5px solid var(--border-soft);
+  color: var(--ivory);
+  padding: 14px;
+  border-radius: 13px;
+  font-size: 15.5px;
+  font-weight: 800;
+  font-family: var(--font-body);
+  cursor: pointer;
+  text-align: center;
+}
+.vote-target-btn.chosen {
+  background: rgba(201, 162, 39, .16);
+  border-color: var(--gold);
+  color: var(--gold-light);
+}
+.vote-target-btn:disabled { opacity: .6; cursor: default; }
+.vote-target-btn:not(:disabled):active { transform: scale(.97); }
+
+/* نهاية الجولة */
+.winner-box { text-align: center; }
+.big-emoji { font-size: 72px; animation: bounce 1.6s ease-in-out infinite; display: inline-block; }
+@keyframes bounce { 0%, 100% { transform: translateY(0) rotate(0); } 50% { transform: translateY(-12px) rotate(-8deg); } }
+.spy-word {
+  background: rgba(201, 162, 39, .13);
+  border: 1px solid var(--border-gold);
+  color: var(--gold-light);
+  border-radius: 12px;
+  padding: 10px;
+  font-weight: 800;
+  font-size: 14px;
+  margin: 10px 0;
+}
+.reveal-list { display: flex; flex-direction: column; gap: 6px; margin: 12px 0; text-align: right; }
+.reveal-row {
+  display: flex; justify-content: space-between;
+  background: rgba(244, 238, 224, .05);
+  border: 1px solid var(--border-soft);
+  border-radius: 10px;
+  padding: 9px 13px;
+  font-size: 13.5px;
+  font-weight: 700;
+}
+.reveal-row.winner-row { background: rgba(201, 162, 39, .13); border-color: var(--border-gold); }
+.reveal-row.spy-row { background: rgba(168, 62, 78, .14); border-color: rgba(168, 62, 78, .45); }
+.reveal-row .char-part { color: var(--ivory-dim); font-weight: 800; display: inline-flex; align-items: center; gap: 7px; }
+.reveal-img { width: 30px; height: 30px; object-fit: cover; border-radius: 8px; border: 1px solid var(--border-soft); }
+
+/* نتيجة المزاد */
+.auction-result { margin: 12px 0; text-align: right; }
+.auction-result-list { display: flex; flex-direction: column; gap: 10px; }
+.auction-result-row { background: rgba(244, 238, 224, .04); border: 1px solid var(--border-soft); border-radius: 13px; padding: 11px; }
+.auction-result-row.first { background: rgba(201, 162, 39, .1); border-color: var(--border-gold); }
+.ar-head { display: flex; justify-content: space-between; font-weight: 900; font-size: 14px; margin-bottom: 7px; }
+.ar-badge { font-size: 18px; }
+.auction-result-row .mini-row { margin-top: 4px; }
+
+/* ===== التوست ===== */
+.toast {
+  position: fixed;
+  bottom: 26px; left: 50%;
+  transform: translateX(-50%);
+  background: rgba(12, 33, 25, 0.96);
+  border: 1px solid var(--border-gold);
+  color: var(--ivory);
+  padding: 13px 22px;
+  border-radius: 999px;
+  font-size: 13.5px;
+  font-weight: 700;
+  box-shadow: 0 12px 34px rgba(0, 0, 0, .5);
+  z-index: 100;
+  max-width: 92vw;
+  text-align: center;
+  animation: toastIn .3s ease;
+}
+@keyframes toastIn { from { opacity: 0; transform: translateX(-50%) translateY(12px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }
+
+/* ===== لعبة مين الكذاب؟ ===== */
+.liar-wrap {
+  background: linear-gradient(180deg, rgba(27, 70, 51, .5), rgba(12, 33, 25, .35));
+  border: 1px solid var(--border-gold);
+  border-radius: 20px;
+  padding: 18px;
+  margin-bottom: 12px;
+}
+.liar-flag {
+  background: rgba(168, 62, 78, .16);
+  border: 1px solid rgba(168, 62, 78, .5);
+  color: #e6a0ab;
+  border-radius: 12px;
+  padding: 10px 12px;
+  font-weight: 800;
+  font-size: 13.5px;
+  margin-bottom: 10px;
+  text-align: center;
+}
+.liar-question {
+  background: rgba(201, 162, 39, .12);
+  border: 1px solid var(--border-gold);
+  color: var(--gold-light);
+  border-radius: 14px;
+  padding: 16px;
+  font-size: 17px;
+  font-weight: 900;
+  text-align: center;
+  margin-bottom: 12px;
+  line-height: 1.6;
+}
+.liar-wrap textarea {
+  width: 100%;
+  background: rgba(244, 238, 224, .06);
+  border: 1px solid var(--border-soft);
+  border-radius: 12px;
+  color: var(--ivory);
+  padding: 12px;
+  font-size: 14.5px;
+  font-family: var(--font-body);
+  resize: none;
+  margin-bottom: 8px;
+  box-sizing: border-box;
+}
+.liar-count { text-align: center; font-size: 12px; color: var(--ivory-dim); font-weight: 700; margin-top: 6px; }
+.liar-hint { text-align: center; font-size: 12.5px; color: var(--ivory-dim); font-weight: 700; margin-top: 8px; }
+.liar-answers-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; }
+.liar-answer-row {
+  display: flex; flex-direction: column; gap: 3px;
+  background: rgba(244, 238, 224, .05);
+  border: 1px solid var(--border-soft);
+  border-radius: 12px;
+  padding: 11px 13px;
+}
+.liar-answer-row.mine { background: rgba(201, 162, 39, .12); border-color: var(--border-gold); }
+.la-name { font-size: 12px; font-weight: 900; color: var(--ivory-dim); }
+.liar-answer-row.mine .la-name { color: var(--gold-light); }
+.la-text { font-size: 14.5px; font-weight: 800; color: var(--ivory); }
+.liar-vote-title { text-align: center; font-size: 17px; font-weight: 900; color: var(--gold-light); margin-bottom: 10px; }
+.liar-vote-targets { display: flex; flex-direction: column; gap: 8px; margin-bottom: 6px; }
+.liar-reveal-name { font-size: 17px; font-weight: 900; color: var(--gold-light); margin: 10px 0 6px; }
+.liar-reveal-q { font-size: 13.5px; font-weight: 700; color: var(--ivory-dim); margin: 3px 0; }
+.liar-reveal-a { font-size: 13.5px; font-weight: 700; color: var(--ivory-dim); margin: 3px 0; }
+.liar-reveal-result {
+  margin-top: 8px;
+  font-size: 14px;
+  font-weight: 900;
+  color: #e6a0ab;
+  background: rgba(168, 62, 78, .12);
+  border: 1px solid rgba(168, 62, 78, .4);
+  border-radius: 10px;
+  padding: 9px;
+}
+
+/* ============================================================
+   الإعدادات (Settings)
+   ============================================================ */
+.settings-gear {
+  position: fixed;
+  top: 14px;
+  inset-inline-start: 14px;
+  z-index: 60;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  border: 1px solid var(--border-gold);
+  background: var(--surface);
+  color: var(--gold-light);
+  font-size: 22px;
+  cursor: pointer;
+  backdrop-filter: blur(6px);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+}
+.settings-gear:active { transform: scale(0.94); }
+
+.settings-box { position: relative; max-width: 340px; }
+.settings-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+.settings-head h3 { font-size: 18px; font-weight: 900; }
+.settings-list { display: flex; flex-direction: column; gap: 12px; }
+.setting-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  background: rgba(244, 238, 224, 0.04);
+  border: 1px solid var(--border-soft);
+  border-radius: 12px;
+  padding: 10px 12px;
+  cursor: pointer;
+}
+.setting-row.setting-col { flex-direction: column; align-items: stretch; }
+.setting-name { font-size: 14px; font-weight: 800; }
+.setting-select {
+  width: 100%;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid var(--border-soft);
+  border-radius: 10px;
+  color: var(--ivory);
+  font-size: 14px;
+  font-weight: 700;
+  padding: 8px 10px;
+  font-family: var(--font-body);
+}
+input[type="range"].setting-range, #set-font {
+  width: 100%;
+  accent-color: var(--gold);
+}
+
+/* الوضع الداكن: تغميق الخلفية */
+body.dark { filter: none; }
+body.dark .modal-box,
+body.dark .card,
+body.dark .lobby-card {
+  background: linear-gradient(170deg, #0f2218, #0a1a11);
+  border-color: rgba(201, 162, 39, 0.22);
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.6);
+}
+body.dark .bg-deco .orb { opacity: 0.2; }
+body.dark .chat-list,
+body.dark input,
+body.dark textarea,
+body.dark select {
+  background: rgba(0, 0, 0, 0.4);
+}
+
+/* إيقاف الأنيميشن: تقليل الحركة */
+body.no-anim *, body.no-anim *::before, body.no-anim *::after {
+  animation-duration: 0.001s !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.001s !important;
+}
+
+/* مقياس حجم الخط العام */
+body {
+  font-size: calc(15.5px * var(--font-scale, 1));
+}
+
+/* ============================================================
+   الإشعارات داخل التطبيق (Notifications)
+   ============================================================ */
+.notif-banner {
+  position: fixed;
+  top: 14px;
+  inset-inline-end: 14px;
+  left: 14px;
+  z-index: 90;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: linear-gradient(135deg, rgba(201, 162, 39, 0.22), rgba(168, 62, 78, 0.22));
+  border: 1px solid var(--border-gold);
+  border-radius: 14px;
+  padding: 10px 14px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(8px);
+  animation: notifIn 0.3s ease-out;
+}
+.notif-banner.hidden { display: none; }
+.notif-icon { font-size: 18px; }
+.notif-msg { flex: 1; font-size: 13.5px; font-weight: 800; color: var(--ivory); }
+.notif-close {
+  background: rgba(244, 238, 224, 0.12);
+  border: none;
+  border-radius: 50%;
+  color: var(--ivory);
+  width: 26px;
+  height: 26px;
+  font-size: 13px;
+  cursor: pointer;
+}
+.notif-close:active { transform: scale(0.92); }
+@keyframes notifIn {
+  from { transform: translateY(-14px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+/* ============================================================
+   السجل الدائم على التليفون (Personal Record)
+   ============================================================ */
+.record-card { margin-top: 14px; padding: 14px 16px; }
+.record-head {
+  font-size: 13px;
+  font-weight: 900;
+  color: var(--gold-light);
+  text-align: center;
+  margin-bottom: 10px;
+}
+.record-stats {
+  display: flex;
+  justify-content: space-around;
+  gap: 8px;
+}
+.record-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+.record-stat b {
+  font-size: 20px;
+  font-weight: 900;
+  color: var(--gold-light);
+}
+.record-stat span {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--ivory-dim);
+}
+
+/* ===== مودال رمز QR (Feature 8) ===== */
+.qr-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  background: rgba(6, 14, 10, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+.qr-modal.hidden { display: none; }
+.qr-modal-card {
+  background: var(--ivory);
+  color: #231a05;
+  border-radius: 18px;
+  padding: 20px;
+  text-align: center;
+  max-width: 320px;
+  width: 100%;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+}
+.qr-modal-card h3 {
+  margin: 0 0 6px;
+  font-size: 20px;
+  font-family: var(--font-display);
+}
+.qr-hint {
+  margin: 0 0 12px;
+  font-size: 13px;
+  color: #5a5238;
+}
+.qr-canvas {
+  width: 260px;
+  height: 260px;
+  max-width: 100%;
+  border: 4px solid #fff;
+  border-radius: 12px;
+  background: #fff;
+}
+.qr-link {
+  display: block;
+  direction: ltr;
+  margin: 10px auto 14px;
+  font-size: 12px;
+  color: #4a4020;
+  overflow-wrap: anywhere;
+}
+
+/* ===== ميديا الشاات (Feature 2) ===== */
+.chat-input-row {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+.chat-media-btns {
+  display: flex;
+  gap: 4px;
+  flex-shrink: 0;
+}
+.btn-media {
+  min-width: 34px;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  font-size: 16px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.chat-msg.media {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  max-width: 240px;
+}
+.chat-msg.media .chat-media {
+  max-width: 100%;
+}
+.chat-img {
+  max-width: 210px;
+  max-height: 210px;
+  border-radius: 10px;
+  display: block;
+  cursor: zoom-in;
+  border: 2px solid rgba(244, 238, 224, 0.25);
+}
+.chat-video {
+  max-width: 220px;
+  border-radius: 10px;
+  display: block;
+}
+.chat-msg.media audio {
+  width: 190px;
+  height: 34px;
+}
+.media-viewer {
+  position: fixed;
+  inset: 0;
+  z-index: 95;
+  background: rgba(4, 10, 7, 0.92);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.media-viewer.hidden { display: none; }
+.media-viewer-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  max-width: 92vw;
+}
+.media-viewer-box img {
+  max-width: 92vw;
+  max-height: 76vh;
+  border-radius: 12px;
+}

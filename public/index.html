@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>كرت فكة 🃏</title>
+  <link rel="stylesheet" href="/fonts/fonts.css?v=10" />
+  <link rel="stylesheet" href="/styles.css?v=10" />
+</head>
+<body>
+  <div class="bg-deco">
+    <span class="orb orb-1"></span>
+    <span class="orb orb-2"></span>
+    <span class="orb orb-3"></span>
+    <span class="pitch-line pitch-a"></span>
+  </div>
+
+  <!-- ===== شاشة البداية ===== -->
+  <section id="screen-home" class="screen active">
+    <button id="btn-settings" class="settings-gear" title="الإعدادات">⚙️</button>
+    <div class="ornament" aria-hidden="true">
+      <svg viewBox="0 0 128 18" fill="none">
+        <line x1="4" y1="9" x2="52" y2="9" stroke="#c9a227" stroke-width="1.5" stroke-linecap="round"/>
+        <path d="M64 3 L70 9 L64 15 L58 9 Z" fill="#c9a227"/>
+        <line x1="76" y1="9" x2="124" y2="9" stroke="#c9a227" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <div class="logo">
+      <div class="kicker">مجلس اللعب</div>
+      <img src="/img/logo.svg" alt="شعار كرت فكة" class="logo-img" />
+      <h1 id="app-title">كرت فكة</h1>
+      <p id="app-tagline" class="tagline">اجمعوا حول الطاولة، واختاروا اللعبة اللي تبدأوا بيها الليلة</p>
+    </div>
+
+    <!-- اختيار المود -->
+    <div class="mode-select">
+      <button id="mode-guess" class="mode-btn active">🎭 تخمين</button>
+      <button id="mode-spy" class="mode-btn">🕵️ جاسوس</button>
+      <button id="mode-liar" class="mode-btn">🤥 مين الكذاب؟</button>
+      <button id="mode-auction" class="mode-btn">🔨 مزاد</button>
+    </div>
+    <p id="mode-hint" class="mode-hint">كل واحد ياخد شخصية سرية من نفس الكاتيجوري، ونتناوب الأسئلة لحد ما نكشف بعض 🕵️</p>
+
+    <div class="card form-card">
+      <div class="rank-strip">
+        <span class="rank-tier gold">⭐ أسطورة</span>
+        <span class="rank-tier red">🔥 نجم</span>
+        <span class="rank-tier violet">💎 مميز</span>
+        <span class="rank-tier blue">🃏 كلاسيك</span>
+        <span class="rank-tier base">🎯 أساسي</span>
+      </div>
+      <label>اسمك</label>
+      <input id="inp-name" type="text" maxlength="20" placeholder="اكتب اسمك هنا..." autocomplete="off" />
+      <div class="btn-row">
+        <button id="btn-create" class="btn btn-primary">🆕 اعمل أوضة جديدة</button>
+      </div>
+      <div class="divider"><span>أو</span></div>
+      <label>كود الأوضة</label>
+      <input id="inp-join-code" type="text" maxlength="6" placeholder="كود الأوضة" style="text-align:center;letter-spacing:.4em;text-transform:uppercase" autocomplete="off" />
+      <button id="btn-join" class="btn btn-secondary">🚪 انضم لأوضة</button>
+      <div id="home-error" class="error hidden"></div>
+    </div>
+
+    <!-- السجل الدائم بتاعك (على التليفون) -->
+    <div class="card record-card">
+      <div class="record-head">📋 سجلك الدائم</div>
+      <div class="record-stats">
+        <div class="record-stat"><b id="rec-points">0</b><span>⭐ نقطة</span></div>
+        <div class="record-stat"><b id="rec-wins">0</b><span>🏆 فوز</span></div>
+        <div class="record-stat"><b id="rec-games">0</b><span>🎮 جولة</span></div>
+      </div>
+    </div>
+
+    <p class="hint">أوفلاين: اتصلوا بنفس الواي فاي أو الهوت سبوت 📶 · أونلاين: صاحب الأوضة يبعث لينك الأوضة 🌍</p>
+
+    <footer class="app-credit">© 2026 Hassan Abd EL-zaher — جميع الحقوق محفوظة</footer>
+  </section>
+
+  <!-- ===== شاشة اللوبي ===== -->
+  <section id="screen-lobby" class="screen">
+    <div class="card lobby-card">
+      <span id="lobby-mode-badge" class="mode-badge">🎭 تخمين شخصيات</span>
+      <h2>أوضة اللعب</h2>
+      <div class="room-code-box">
+        <span>كود الأوضة</span>
+        <div id="room-code" class="room-code">----</div>
+      </div>
+      <div id="host-ip-box" class="host-ip hidden">
+        <p>صلّب اللينك ده لصحابك يلعبوا معاك — حتى لو مش على نفس الشبكة 🌍</p>
+        <code id="host-ip"></code>
+        <code id="host-ip-lan" class="host-ip-lan hidden"></code>
+        <div class="btn-row">
+          <button id="btn-copy-link" class="btn btn-ghost">📋 انسخ اللينك</button>
+          <button id="btn-show-qr" class="btn btn-ghost" title="رمز QR للانضمام السريع">🧾 اعرض QR</button>
+        </div>
+      </div>
+
+      <!-- إعدادات الأوضة -->
+      <div id="lobby-options" class="lobby-options">
+        <div id="category-row">
+          <label>📚 اختار الكاتيجوري</label>
+          <div id="lobby-category-picker" class="picker-row"></div>
+        </div>
+
+        <div id="spy-count-row" class="hidden">
+          <label>🕵️ عدد الجواسيس</label>
+          <div class="spy-count-row">
+            <button id="btn-spy-1" class="spy-count-btn active">واحد 🕵️</button>
+            <button id="btn-spy-2" class="spy-count-btn">اتنين 🕵️🕵️</button>
+          </div>
+          <label class="da-toggle">
+            <input id="btn-da" type="checkbox" />
+            <span>🎭 عميل مزدوج بينهم (شبه مدني — شغال للجواسيس)</span>
+          </label>
+        </div>
+
+        <div id="squad-size-row" class="hidden">
+          <label>⚽ حجم التشكيلة (يختارها صاحب الأوضة)</label>
+          <div class="spy-count-row">
+            <button id="btn-squad-5" class="spy-count-btn active">5 لاعبين 🧤🛡️🎯⚽</button>
+            <button id="btn-squad-11" class="spy-count-btn">11 لاعب 🏟️</button>
+          </div>
+        </div>
+        <div id="difficulty-row" class="hidden">
+          <label>🎚️ صعوبة لعيبة الكورة (يختارها صاحب الأوضة)</label>
+          <div id="difficulty-picker" class="picker-row"></div>
+        </div>
+        <div id="lobby-who-picks" class="who-picks hidden"></div>
+      </div>
+
+      <h3>اللعيبة 👥 (<span id="players-count">0</span>)</h3>
+      <ul id="lobby-players" class="players-list"></ul>
+
+      <!-- لوحة النقاط في اللوبي -->
+      <div id="lobby-score" class="score-box hidden">
+        <h3 class="score-title">⭐ لوحة النقاط</h3>
+        <div id="lobby-scoreboard-list" class="score-list"></div>
+      </div>
+
+      <div id="lobby-wait" class="wait-msg">مستنيين صاحب الأوضة يبدأ اللعب... ⏳</div>
+      <button id="btn-start" class="btn btn-primary hidden">▶️ ابدأ اللعب</button>
+      <button id="btn-leave-lobby" class="btn btn-ghost">🚪 سيب الأوضة</button>
+    </div>
+  </section>
+
+  <!-- ===== شاشة اللعب ===== -->
+  <section id="screen-game" class="screen">
+    <header class="game-header">
+      <div class="header-info">
+        <span class="badge">أوضة <b id="g-code">--</b></span>
+        <span id="g-turn-badge" class="badge turn-badge"></span>
+        <span id="g-score" class="badge points-badge hidden">⭐ 0</span>
+      </div>
+      <button id="btn-leave-game" class="btn-ghost-sm" title="سيب الأوضة">🚪</button>
+    </header>
+
+    <div id="spectator-banner" class="spectator hidden">🙈 اتخرجت من الجولة... بس تقدر تشوف وتتفرج</div>
+
+    <!-- ===== التخمين / الجاسوس: بطاقة الشخصية ===== -->
+    <div class="secret-card hidden" id="my-card">
+      <div id="secret-label" class="secret-label">شخصيتك السرية 🕵️</div>
+      <img id="my-char-img" class="char-img hidden" alt="">
+      <div id="my-char-emoji" class="char-emoji hidden">❓</div>
+      <div id="my-char-name" class="char-name">؟؟؟</div>
+      <p id="secret-note" class="secret-note">إنت بس اللي شايفها... صحابك يسألوك وانت تجاوب بنعم/لا</p>
+      <div id="my-char-info" class="char-info hidden"></div>
+    </div>
+
+    <!-- شريط الدور -->
+    <div id="turn-bar" class="turn-bar"></div>
+
+    <!-- زر التصويت (صاحب الأوضة - جاسوس) -->
+    <div id="vote-request-wrap" class="vote-request-wrap hidden">
+      <button id="btn-request-vote" class="btn btn-warn">🗳️ تصويت الآن</button>
+    </div>
+
+    <!-- عريضة التصويت (تصويت الآن أم استمرار) -->
+    <div id="vote-prompt-box" class="vote-prompt hidden">
+      <div class="vp-body">
+        <div class="vp-title">🗳️ صاحب الأوضة عايز تصويت على الجاسوس!</div>
+        <div id="vote-prompt-count" class="vp-count">اتجاوب X من Y</div>
+        <div class="vp-btns">
+          <button id="btn-vote-now" class="btn btn-warn">🗳️ تصويت الآن</button>
+          <button id="btn-vote-later" class="btn btn-ghost">🙅‍♂️ نكمّل عادي</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- أزرار اللعب (تخمين/جاسوس) -->
+    <div id="action-row" class="action-row">
+      <button id="btn-guess" class="btn btn-primary">🔍 خمّن شخصية</button>
+      <button id="btn-pass" class="btn btn-secondary">➡️ مرر الدور</button>
+    </div>
+
+    <!-- ===== مين الكذاب؟ ===== -->
+    <div id="liar-wrap" class="liar-wrap hidden">
+      <div id="liar-flag" class="liar-flag hidden">🤫 أنت الكذاب! شايف سؤال مختلف — جاوب كأنك شايف نفس السؤال 😏</div>
+      <div id="liar-question" class="liar-question">...</div>
+
+      <!-- مرحلة كتابة الإجابة -->
+      <div id="liar-answer-zone">
+        <textarea id="liar-answer-input" maxlength="120" rows="2" placeholder="اكتب إجابتك في السر... 🤐"></textarea>
+        <button id="liar-answer-send" class="btn btn-primary">🗳️ أرسل إجابتي</button>
+        <p id="liar-answer-count" class="liar-count"></p>
+      </div>
+
+      <!-- مرحلة عرض الإجابات -->
+      <div id="liar-reveal-zone" class="hidden">
+        <div id="liar-answers-list" class="liar-answers-list"></div>
+        <button id="liar-start-vote" class="btn btn-warn hidden">🗳️ ابدأ التصويت</button>
+        <p class="liar-hint">شوفوا مين جوابه مش ماشي مع السؤال... 🧐</p>
+      </div>
+
+      <!-- مرحلة التصويت -->
+      <div id="liar-vote-zone" class="hidden">
+        <p class="liar-vote-title">🗳️ مين الكذاب؟</p>
+        <div id="liar-vote-targets" class="liar-vote-targets"></div>
+        <p id="liar-vote-count" class="liar-count"></p>
+      </div>
+    </div>
+
+    <!-- ===== المزاد ===== -->
+    <div id="auction-wrap" class="auction-wrap hidden">
+      <div id="auct-status" class="auct-status">...</div>
+
+      <div id="auct-card-zone" class="auct-card-zone">
+        <div class="fifa-card" id="auct-card">
+          <div class="fc-rating" id="auct-card-rating">--</div>
+          <div class="fc-body">
+            <span class="fc-pos" id="auct-card-pos">--</span>
+            <div class="fc-name" id="auct-card-name">جارٍ جلب البطاقة...</div>
+            <div class="fc-meta"><span id="auct-card-club">--</span> <span class="dot">•</span> <span id="auct-card-country">--</span></div>
+            <div class="fc-tag" id="auct-card-tag">--</div>
+          </div>
+          <div class="fc-value" id="auct-card-value">💰 --</div>
+        </div>
+      </div>
+
+      <div id="auct-progress" class="auct-progress">كارت 1 من 10</div>
+
+      <div class="auct-bid-row" id="auct-bid-row">
+        <button id="auct-buy" class="btn btn-primary">💰 اشتري</button>
+        <button id="auct-r1" class="btn btn-secondary">+1</button>
+        <button id="auct-r5" class="btn btn-secondary">+5</button>
+        <button id="auct-r10" class="btn btn-secondary">+10</button>
+        <button id="auct-pass" class="btn btn-ghost">⏭️ اخرج</button>
+      </div>
+
+      <div class="auct-budget-box">
+        <div class="auct-budget-label"><span>💼 ميزانيتك</span><span id="auct-budget">--</span></div>
+        <div class="budget-bar"><div id="auct-budget-fill" class="budget-fill" style="width:0%"></div></div>
+      </div>
+
+      <div id="auct-steal-wrap" class="auct-steal hidden">
+        <div id="auct-steal-turn" class="auct-steal-title">مرحلة الخطف ⚡</div>
+        <div id="auct-steal-targets" class="auct-steal-targets"></div>
+        <button id="auct-steal-confirm" class="btn btn-danger hidden">⚡ أكد الخطف</button>
+        <button id="auct-steal-skip" class="btn btn-ghost hidden">⏭️ عدّي على الخطف</button>
+      </div>
+
+      <div class="my-team-box">
+        <div class="my-team-head"><span>👥 تشكيلتك</span><span id="auct-my-total" class="my-total">0</span></div>
+        <div id="auct-my-team" class="mini-row"></div>
+      </div>
+
+      <div class="teams-box">
+        <div class="teams-head">🔥 تشكيلات المنافسين</div>
+        <div id="auct-teams" class="teams-list"></div>
+      </div>
+    </div>
+
+    <!-- الشاات -->
+    <div class="chat-wrap">
+      <div id="chat-list" class="chat-list"></div>
+      <div class="chat-quick" id="chat-quick"></div>
+      <div class="chat-input-row">
+        <div class="chat-media-btns">
+          <button id="btn-chat-img" class="btn btn-ghost btn-media" title="صوره 📷">📷</button>
+          <button id="btn-chat-video" class="btn btn-ghost btn-media" title="فيديو قصير 🎬">🎬</button>
+          <button id="btn-chat-voice" class="btn btn-ghost btn-media" title="تسجيل صوتي 🎤">🎤</button>
+        </div>
+        <input id="chat-file-img" type="file" accept="image/*" capture="environment" hidden />
+        <input id="chat-file-video" type="file" accept="video/*" capture="environment" hidden />
+        <input id="chat-input" type="text" maxlength="300" placeholder="اكتب سؤالك هنا..." autocomplete="off" />
+        <button id="chat-send" class="btn btn-primary">إرسال</button>
+      </div>
+    </div>
+
+    <div id="game-error" class="error hidden"></div>
+  </section>
+
+  <!-- ===== مودال التخمين/الاتهام ===== -->
+  <div id="guess-modal" class="modal hidden">
+    <div class="modal-box">
+      <h3 id="guess-modal-title">🔍 خمّن مين؟</h3>
+      <label id="guess-target-label">على مين بتحاول تعرف شخصيته؟</label>
+      <select id="guess-target"></select>
+      <div id="guess-word-zone">
+        <label>شخصيته إيه؟</label>
+        <input id="guess-input" type="text" maxlength="60" placeholder="اكتب اسم الشخصية..." autocomplete="off" />
+      </div>
+      <div class="modal-btns">
+        <button id="guess-submit" class="btn btn-primary">أكد التخمين ⚡</button>
+        <button id="guess-cancel" class="btn btn-ghost">إلغاء</button>
+      </div>
+      <p id="guess-hint" class="modal-hint">⚠️ لو خمّنت غلط هتخرج من الجولة!</p>
+    </div>
+  </div>
+
+  <!-- ===== مودال التصويت على الجاسوس ===== -->
+  <div id="vote-modal" class="modal hidden">
+    <div class="modal-box">
+      <h3>🗳️ مين الجاسوس؟</h3>
+      <p id="vote-modal-count" class="modal-hint">صوت عن X من Y</p>
+      <div id="vote-modal-targets" class="vote-targets"></div>
+    </div>
+  </div>
+
+  <!-- ===== مودال نهاية الجولة ===== -->
+  <div id="over-modal" class="modal hidden">
+    <div class="modal-box winner-box">
+      <div id="winner-emoji" class="big-emoji">🏆</div>
+      <h3 id="winner-text">خلصنا!</h3>
+      <div id="spy-word-reveal" class="spy-word hidden"></div>
+      <div id="liar-reveal-box" class="liar-reveal hidden">
+        <div id="liar-reveal-name" class="liar-reveal-name"></div>
+        <div id="liar-reveal-q" class="liar-reveal-q"></div>
+        <div id="liar-reveal-a" class="liar-reveal-a"></div>
+        <div id="liar-reveal-result" class="liar-reveal-result"></div>
+      </div>
+      <div id="reveal-list" class="reveal-list"></div>
+
+      <!-- نتيجة المزاد -->
+      <div id="auction-result" class="auction-result hidden">
+        <div id="auction-result-list" class="auction-result-list"></div>
+      </div>
+
+      <!-- لوحة النقاط -->
+      <div id="over-score" class="score-box hidden">
+        <h3 class="score-title">⭐ لوحة النقاط</h3>
+        <div id="over-scoreboard-list" class="score-list"></div>
+      </div>
+
+      <button id="btn-next-round" class="btn btn-primary">🔄 جولة تانية</button>
+      <button id="btn-back-lobby" class="btn btn-ghost">🚪 رجوع للوبي</button>
+    </div>
+  </div>
+
+  <!-- ===== مودال الإعدادات (Settings) ===== -->
+  <div id="settings-modal" class="modal hidden">
+    <div class="modal-box settings-box">
+      <div class="settings-head">
+        <h3>⚙️ الإعدادات</h3>
+        <button id="settings-close" class="btn btn-ghost" title="قفل">✕</button>
+      </div>
+      <div class="settings-list">
+        <label class="setting-row">
+          <span class="setting-name">🔊 الصوت</span>
+          <input id="set-sound" type="checkbox" checked />
+        </label>
+        <label class="setting-row">
+          <span class="setting-name">🎵 الموسيقى</span>
+          <input id="set-music" type="checkbox" checked />
+        </label>
+        <label class="setting-row">
+          <span class="setting-name">📳 الاهتزاز</span>
+          <input id="set-vibrate" type="checkbox" checked />
+        </label>
+        <label class="setting-row">
+          <span class="setting-name">✨ الأنيميشن</span>
+          <input id="set-anim" type="checkbox" checked />
+        </label>
+        <label class="setting-row">
+          <span class="setting-name">🌙 الوضع الداكن</span>
+          <input id="set-dark" type="checkbox" />
+        </label>
+        <div class="setting-row setting-col">
+          <span class="setting-name">🌐 اللغة</span>
+          <select id="set-lang" class="setting-select">
+            <option value="ar">العربية</option>
+            <option value="en">English</option>
+          </select>
+        </div>
+        <div class="setting-row setting-col">
+          <span class="setting-name">🔤 حجم الخط <b id="set-font-val">100%</b></span>
+          <input id="set-font" type="range" min="85" max="150" value="100" />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== توست ===== -->
+  <div id="toast" class="toast hidden"></div>
+
+  <!-- ===== شريط الإشعارات داخل التطبيق (Notifications) ===== -->
+  <div id="notif-banner" class="notif-banner hidden">
+    <span id="notif-icon" class="notif-icon">🔔</span>
+    <span id="notif-msg" class="notif-msg"></span>
+    <button id="notif-close" class="notif-close" title="قفل">✕</button>
+  </div>
+
+  <!-- ===== مودال رمز QR للانضمام السريع (Feature 8) ===== -->
+  <div id="qr-modal" class="qr-modal hidden">
+    <div class="qr-modal-card">
+      <h3>🧾 امسح الرمز وادخل</h3>
+      <p class="qr-hint">افتح كاميرا موبايلك ووجّهها للرمز أو افتح التطبيق واضغط «امسح QR»</p>
+      <canvas id="qr-canvas" class="qr-canvas" width="260" height="260"></canvas>
+      <code id="qr-link" class="qr-link"></code>
+      <button id="qr-close" class="btn btn-secondary">✕ قفل</button>
+    </div>
+  </div>
+
+  <!-- ===== معاينة صورة من الشات (Feature 2) ===== -->
+  <div id="media-viewer" class="media-viewer hidden">
+    <div class="media-viewer-box">
+      <img id="media-viewer-img" alt="صوره" />
+      <button id="media-viewer-close" class="btn btn-secondary">إغلاق</button>
+    </div>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/qrcode.js"></script>
+  <script src="/client.js?v=10"></script>
+</body>
+</html>
