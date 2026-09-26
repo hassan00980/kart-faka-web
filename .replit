@@ -1,0 +1,8 @@
+entrypoint = "server.js"
+run = "npm start"
+onBoot = "npm install"
+
+[deployment]
+build = "npm install"
+run = "npm start"
+deploymentTarget = "cloudrun"
